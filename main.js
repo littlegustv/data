@@ -4,35 +4,48 @@ var WIDTH = 420, BARHEIGHT = 20, BARWIDTH = 20;
 
 var data;
 var bars;
+var header;
 
 function update( index ) {
 	var x = d3.scaleLinear().domain([ 0, d3.max( data[index].data ) ]).range([ 0, WIDTH ]);		
 	bars.data( data[index].data );
 
-	bars.select("rect").transition().attr("width", d => Math.max(BARWIDTH, x(d)) ).attr("height", BARHEIGHT - 1);
-	bars.select("text").transition().attr("x", d => x(d) - 3 ).attr("y", BARHEIGHT / 2).attr("dy", "0.35em").text( d => d );
+	bars.select("rect.bar-block").transition().attr("width", d => Math.max(BARWIDTH, x(d)) ).attr("height", BARHEIGHT - 1);
+	bars.select("text.bar-value").transition().attr("x", d => Math.max(x(d), BARWIDTH) - 3 ).attr("y", BARHEIGHT / 2).attr("dy", "0.35em").text( d => d );
+	bars.select("text.bar-name").transition().attr("x", d => Math.max(x(d), BARWIDTH) + 3 ).attr("y", BARHEIGHT / 2).attr("dy", "0.35em").text( ( d, i ) => header[i] );
 }
 	
 $( document ).ready( e => {
 	$.get(Y2018, raw => {
-		raw = raw.split('\n').map( row => row.split(',') );
-		var header = raw.shift().slice(2);
+		var raw = raw.split('\n').map( row => row.split(',') );
+		header = raw.shift().slice(2);
 		header = header.map( (key, index) => key.length > 0 ? key : "column_" + index );
 
 		data = raw.map( (row) => {
 			return { date: row.shift(), data: row.slice(1).map( i => parseInt(i) || 0 ) }
 		});
 
+		var dates = d3.select(".dates").selectAll("option").data( data.map( d => d.date ) ).enter().append("option").attr("value", (d, i) => i).text( d => d);
+
+		d3.select('.dates')
+		  .on('change', function() {
+		    var index = parseInt(d3.select(this).property('value')) || 0;
+		    update( index );
+		});
+
 		var x = d3.scaleLinear().domain([ 0, d3.max( data[0].data ) ]).range([ 0, WIDTH ]);		
 
-		bars = d3.select(".chart").attr( "width", WIDTH ).attr( "height", BARHEIGHT * data[0].data.length )
+		bars = d3.select(".chart").attr( "width", WIDTH + 240 ).attr( "height", BARHEIGHT * data[0].data.length )
 			.selectAll("g")
 			.data( data[0].data )
 			.enter().append("g").attr( "transform", ( d, i ) => "translate(0, " + i * BARHEIGHT + ")" );
 
-		bars.append("rect").attr("width", d => Math.max(BARWIDTH, x(d)) ).attr("height", BARHEIGHT - 1);
-		bars.append("text").attr("x", d => x(d) - 3 ).attr("y", BARHEIGHT / 2).attr("dy", "0.35em").text( d => d );
+		bars.append("rect").attr("class", "bar-block");//.attr("width", d => Math.max(BARWIDTH, x(d)) ).attr("height", BARHEIGHT - 1);
+		bars.append("text").attr("class", "bar-value");//.attr("x", d => x(d) - 3 ).attr("y", BARHEIGHT / 2).attr("dy", "0.35em").text( d => d );
+		bars.append("text").attr("class", "bar-name");
 
-		console.log( 'processed', data );
+		update( 0 );
+
+		// console.log( 'processed', data );
 	});
 });
