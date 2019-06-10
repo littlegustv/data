@@ -1,16 +1,15 @@
 <html>
 	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.2/d3.js"></script>
 		<style>
-			.chart rect.bar-block {
-				/*fill: cornflowerblue;*/
-				transition: fill 0.2s;
-				cursor: pointer;
+			body {
+				font-family: monospace;
 			}
-			.chart rect.bar-block:hover {
-				/*fill: darkcyan;*/
+			@keyframes spin {
+				0% { transform: rotate(0deg); }
+				100% { transform: rotate(360deg); }
 			}
-
 			select {
 		    background: white;
 		    margin: 10px 0px;
@@ -19,97 +18,177 @@
 		    font-size: 16px;
 		    letter-spacing: 2px;
 		    color: cornflowerblue;
-		    font-family: monospace;
 		    font-weight: bold;
 			}
-
-
 			.chart text.bar-value {
 				fill: white;
 				font: 10px sans-serif;
 				text-anchor: end;
 			}
-
-			.chart text.bar-name {
+			.chart text {
 				text-anchor: start;
 				font: 10px sans-serif;
 				fill: black;
 			}
+			.loading {
+				position: absolute;
+				height: 240px;
+				width: 240px;
+				top: calc( 50% - 120px );
+				left: calc( 50% - 120px );
+				opacity: 0.5;
+				transition: opacity 0.3s;
+			}
+			.loading svg {
+				animation: spin 3s linear infinite;
+			}
+			.loading:after {
+				content: "loading...";
+				display: block;
+				position: absolute;
+				bottom: -32px;
+				left: 0px;
+				width: 100%;
+				text-align: center;
+				color: blue;
+				font-family: monospace;
+				font-size: 32px;
+			}
+			.loading.done {
+				opacity: 0;
+			}
+			.temperature {
+		    font-size: 2em;
+		    font-weight: bold;
+			}
+			.high {
+				color: coral;
+			}
+			.low {
+				color: aquamarine;
+			}
 		</style>
 	</head>
 	<body>
+		<div class="temperature">
+			<span class="high"></span>
+			<span class="low"></span>
+		</div>
 		<div class="form">
-			<select name="" id="" class="years">
-				<option value="2018">2018</option>
-				<option value="2017">2017</option>
-				<option value="2016">2016</option>
-				<option value="2015">2015</option>
-				<option value="2014">2014</option>
-				<option value="2013">2013</option>
-				<option value="2012">2012</option>
-				<option value="2011">2011</option>
-				<option value="2010">2010</option>
-				<option value="2009">2009</option>
-			</select>
 			<select name="" id="" class="dates"></select>
 		</div>
 		<svg class="chart" width="420" height="120">			
 		</svg>
+		<div class="loading">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 387.06 386">
+			 <g fill="#003f7f" stroke-linecap="round" stroke-width="33.805">
+			  <path d="m62.812 48.073l16.438 45.188c-0.035507 0.038391-0.058289 0.086578-0.09375 0.125l0.125 0.375c-6.9124 7.5339-13.13 15.847-18.5 24.906l-49.5-1.3438c-0.98158 2.2241-1.9852 4.4456-2.875 6.6875-1.2123 3.0543-2.331 6.105-3.375 9.1875-1.0437 3.0826-2.0292 6.2072-2.9062 9.3125-0.78568 2.7821-1.4725 5.5499-2.125 8.3438l40.5 27.094c-0.04924 0.44421-0.017395 0.89896-0.0625 1.3438l0.2812 0.1875c-0.4657 4.7236-0.62151 9.448-0.625 14.156h88.938c0.017822-2.8372 0.25076-5.678 0.65625-8.4688 0.40546-2.7907 1.0008-5.5447 1.7812-8.25 0.78046-2.7053 1.7322-5.3565 2.875-7.9375s2.4763-5.0822 3.9688-7.5 3.1393-4.753 4.9688-6.9688c1.8295-2.2157 3.8462-4.3065 6-6.2812 2.1538-1.9748 4.4407-3.8363 6.9062-5.5312 2.4656-1.695 5.1104-3.2488 7.875-4.625 1.9729-0.98215 3.9477-1.8279 5.9688-2.5938 2.0211-0.76581 4.0702-1.4459 6.125-2 2.0548-0.55411 4.1135-0.99676 6.1875-1.3438 0.97446-0.16302 1.9612-0.22571 2.9375-0.34375 0.33383-0.042969 0.66531-0.087128 1-0.125 0.76926-0.080994 1.5432-0.22778 2.3125-0.28125 0.75201-0.052246 1.4987-0.005096 2.25-0.03125 0.85346-0.036865 1.7062-0.059052 2.5625-0.0625 0.46866 0.002075 0.93835-0.043335 1.4062-0.03125 0.34445 0.008911 0.68732 0.048187 1.0312 0.0625 1.7177 0.057159 3.4372 0.21198 5.1562 0.40625 7.3784 0.83383 14.746 2.8573 21.75 6.3438 22.117 11.01 34.826 32.865 34.969 55.562h89.031c-9.77e-4 -4.7262-0.21802-9.4773-0.6875-14.219l41-27.438c-0.011963-0.052887-0.050415-0.10336-0.0625-0.15625-0.7121-3.1226-1.498-6.2384-2.375-9.3438-0.87695-3.1054-1.8312-6.1987-2.875-9.2812-1.0437-3.0826-2.1627-6.1332-3.375-9.1875-0.88007-2.2174-1.8404-4.4292-2.8125-6.625l-49.125 1.3438c-0.32849-0.55521-0.72672-1.0736-1.0625-1.625h-0.3125c-2.4079-3.9531-4.9672-7.7752-7.6875-11.438-2.7203-3.6623-5.587-7.1699-8.5938-10.531l16.688-45.812c-1.45-1.2646-2.8912-2.5309-4.375-3.75-2.4672-2.0271-4.9752-4.0064-7.5312-5.9062s-5.1733-3.7292-7.8125-5.5-5.3144-3.4851-8.0312-5.125c-0.77728-0.46918-1.5552-0.92767-2.3438-1.375l-39 29.344c-0.56766-0.2489-1.1495-0.4147-1.7188-0.65625l-0.0938 0.0625c-4.3052-1.8309-8.7032-3.4374-13.156-4.875-4.4531-1.4376-8.9587-2.68-13.531-3.7188l-0.0625-0.1562c-0.022186-0.004944-0.040344-0.026306-0.0625-0.03125l-14.031-46.562c-1.9734-0.20361-3.9249-0.44846-5.9062-0.59375-3.1846-0.23352-6.3933-0.3544-9.5938-0.4375-2.1406-0.055573-4.2889-0.0383-6.4375-0.03125-1.0756 0.011414-2.145-0.027863-3.2188 0-3.2004 0.083099-6.3779 0.23523-9.5625 0.46875-1.0126 0.074219-2.0209 0.22302-3.0312 0.3125l-14 46.375c-10.159 2.0968-20.071 5.1804-29.594 9.2188l-39.375-29.594c-1.3157 0.75378-2.6388 1.4659-3.9375 2.25-2.7169 1.6399-5.3917 3.3543-8.0312 5.125-2.6393 1.7708-5.2565 3.6001-7.8125 5.5-2.556 1.8998-5.064 3.8791-7.5312 5.9062-0.98041 0.80563-1.9116 1.6714-2.875 2.5zm181.78 39.281c1.3598 0.094208 2.7412 0.45154 4.0312 1.0938 5.1603 2.5689 7.223 8.7708 4.5938 13.812-2.6293 5.0417-8.9647 7.0377-14.125 4.4688s-7.2231-8.7395-4.5938-13.781c1.972-3.7813 6.0144-5.8764 10.094-5.5938zm-148.88 47.281c1.3598 0.094208 2.7412 0.45154 4.0312 1.0938 5.1604 2.5689 7.2231 8.7396 4.5938 13.781-2.6294 5.0417-8.9647 7.0377-14.125 4.4688s-7.2232-8.7395-4.5938-13.781c1.972-3.7813 6.0144-5.8451 10.094-5.5625z"/>
+			  <path d="m324.25 337.93l-16.438-45.188c0.035492-0.038391 0.058289-0.086609 0.09375-0.125l-0.125-0.375c6.9124-7.5339 13.13-15.847 18.5-24.906l49.5 1.3438c0.98163-2.2241 1.9852-4.4456 2.875-6.6875 1.2123-3.0543 2.331-6.105 3.375-9.1875 1.0437-3.0826 2.0292-6.2072 2.9062-9.3125 0.78571-2.7821 1.4725-5.5499 2.125-8.3438l-40.5-27.094c0.049255-0.44421 0.017456-0.89896 0.0625-1.3438l-0.2812-0.1875c0.4657-4.7236 0.62152-9.4481 0.625-14.156h-88.938c-0.017822 2.8372-0.25079 5.678-0.65625 8.4688-0.40549 2.7907-1.0008 5.5447-1.7812 8.25-0.78046 2.7053-1.7322 5.3565-2.875 7.9375s-2.4763 5.0822-3.9688 7.5-3.1393 4.753-4.9688 6.9688c-1.8295 2.2157-3.8462 4.3065-6 6.2812-2.1538 1.9748-4.4407 3.8363-6.9062 5.5312-2.4656 1.695-5.1104 3.2487-7.875 4.625-1.9729 0.98212-3.9477 1.8279-5.9688 2.5938-2.0211 0.76581-4.0702 1.4459-6.125 2-2.0548 0.55408-4.1135 0.99676-6.1875 1.3438-0.97446 0.16302-1.9612 0.22571-2.9375 0.34375-0.33383 0.042969-0.66531 0.087158-1 0.125-0.76929 0.080994-1.5432 0.22778-2.3125 0.28125-0.75201 0.052246-1.4987 0.005066-2.25 0.03125-0.85346 0.036865-1.7062 0.059021-2.5625 0.0625-0.46866-0.002075-0.93835 0.043335-1.4062 0.03125-0.34445-0.008911-0.68732-0.048218-1.0312-0.0625-1.7177-0.05719-3.4372-0.21198-5.1562-0.40625-7.3784-0.83386-14.746-2.8573-21.75-6.3438-22.117-11.01-34.826-32.865-34.969-55.562h-89.031c0.001007 4.7262 0.21806 9.4773 0.6875 14.219l-41 27.438c0.012024 0.052887 0.050446 0.10336 0.0625 0.15625 0.71211 3.1226 1.498 6.2384 2.375 9.3438 0.877 3.1053 1.8313 6.1987 2.875 9.2812 1.0437 3.0826 2.1628 6.1332 3.375 9.1875 0.88008 2.2174 1.8404 4.4292 2.8125 6.625l49.125-1.3438c0.32849 0.55518 0.72672 1.0737 1.0625 1.625h0.3125c2.4078 3.9531 4.9672 7.7752 7.6875 11.438 2.7203 3.6622 5.587 7.1699 8.5938 10.531l-16.688 45.812c1.45 1.2646 2.8912 2.5309 4.375 3.75 2.4672 2.0271 4.9752 4.0064 7.5312 5.9062 2.556 1.8999 5.1733 3.7293 7.8125 5.5 2.6392 1.7708 5.3144 3.4851 8.0312 5.125 0.77728 0.46924 1.5552 0.92773 2.3438 1.375l39-29.344c0.56766 0.2489 1.1495 0.41473 1.7188 0.65619l0.0938-0.0625c4.3052 1.8309 8.7032 3.4374 13.156 4.875 4.4531 1.4376 8.9587 2.6801 13.531 3.7188l0.0625 0.1562c0.022156 0.005005 0.040314 0.026306 0.0625 0.031311l14.031 46.562c1.9734 0.20361 3.9249 0.44842 5.9062 0.59369 3.1846 0.23364 6.3933 0.35443 9.5938 0.4375 2.1406 0.055603 4.2889 0.03833 6.4375 0.031311 1.0756-0.011414 2.145 0.027893 3.2188 0 3.2004-0.083069 6.3779-0.23529 9.5625-0.46881 1.0126-0.074158 2.0209-0.22296 3.0312-0.3125l14-46.375c10.159-2.0968 20.071-5.1803 29.594-9.2187l39.375 29.594c1.3157-0.75366 2.6388-1.4659 3.9375-2.25 2.7169-1.6399 5.3917-3.3543 8.0312-5.125 2.6393-1.7707 5.2565-3.6001 7.8125-5.5 2.5561-1.8998 5.064-3.8791 7.5312-5.9062 0.98041-0.80566 1.9116-1.6714 2.875-2.5zm-181.78-39.281c-1.3598-0.094177-2.7412-0.45148-4.0312-1.0937-5.1603-2.5689-7.223-8.7708-4.5938-13.812 2.6293-5.0418 8.9647-7.0377 14.125-4.4688 5.1603 2.5688 7.223 8.7396 4.5938 13.781-1.972 3.7813-6.0144 5.8764-10.094 5.5937zm148.88-47.281c-1.3598-0.094208-2.7412-0.45154-4.0312-1.0938-5.1604-2.5689-7.2231-8.7396-4.5938-13.781 2.6294-5.0417 8.9647-7.0377 14.125-4.4688s7.2231 8.7395 4.5938 13.781c-1.972 3.7813-6.0144 5.8451-10.094 5.5625z"/>
+			 </g>
+			 <g stroke-linejoin="round">
+			  <path d="m193.73 98.7c-51.39 0-93.331 41.899-93.331 93.289s41.941 93.331 93.331 93.331 93.289-41.941 93.289-93.331-41.899-93.289-93.289-93.289zm0 21.301c39.862 0 71.989 32.127 71.989 71.989s-32.127 72.03-71.989 72.03-72.03-32.168-72.03-72.03 32.168-71.989 72.03-71.989z" fill="#fff" stroke-width="15.973"/>
+			  <path d="m193.73 101.83c-49.684 0-90.163 40.479-90.163 90.163s40.479 90.163 90.163 90.163 90.121-40.479 90.121-90.163-40.437-90.163-90.121-90.163zm0 15.006c41.568 0 75.157 33.589 75.157 75.157s-33.589 75.157-75.157 75.157-75.157-33.589-75.157-75.157 33.589-75.157 75.157-75.157z" fill="#003f7f" stroke-width="11.245"/>
+			 </g>
+			</svg>
+		</div>
 		<script type="text/javascript">
 			var LOCATIONS = "http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/c7d0546a-a218-479e-bc9f-ce8f13ca972c/download/localisationcompteursvelo2015.csv";
-			var YEARS = {
-				2018: "http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/eea2434f-32b3-4dc5-9035-f1642509f0e7/download/comptage_velo_2018.csv",
-				2017: "http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/83063700-8fe7-4e6f-8c4b-ed55f4602514/download/comptagevelo2017.csv",
-				2016: "http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/6caecdd0-e5ac-48c1-a0cc-5b537936d5f6/download/comptagevelo20162.csv",
-				2015: "http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/64c26fd3-0bdf-45f8-92c6-715a9c852a7b/download/comptagevelo20152.csv",
-				2014: "http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/868b4bc8-ff55-4c48-ab3b-d80615445595/download/comptagevelo2014.csv",
-				2013: "http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/ec12447d-6b2a-45d0-b0e7-fd69c382e368/download/comptagevelo2013.csv",
-				2012: "http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/d54cec49-349e-47af-b152-7740056d7311/download/comptagevelo2012.csv",
-				2011: "http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/f2e43419-ebb2-4e38-80b6-0644c8344338/download/comptagevelo2011.csv",
-				2010: "http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/f23e1c88-cd04-467f-a64a-48f5eb1b6c9e/download/comptagevelo2010.csv",
-				2009: "http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/ee1e9541-939d-429e-919a-8ab94527773c/download/comptagevelo2009.csv"
-			}
+			var YEARS = [
+				"http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/eea2434f-32b3-4dc5-9035-f1642509f0e7/download/comptage_velo_2018.csv",
+				"http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/83063700-8fe7-4e6f-8c4b-ed55f4602514/download/comptagevelo2017.csv",
+				"http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/6caecdd0-e5ac-48c1-a0cc-5b537936d5f6/download/comptagevelo20162.csv",
+				"http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/64c26fd3-0bdf-45f8-92c6-715a9c852a7b/download/comptagevelo20152.csv",
+				"http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/868b4bc8-ff55-4c48-ab3b-d80615445595/download/comptagevelo2014.csv",
+				"http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/ec12447d-6b2a-45d0-b0e7-fd69c382e368/download/comptagevelo2013.csv",
+				"http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/d54cec49-349e-47af-b152-7740056d7311/download/comptagevelo2012.csv",
+				"http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/f2e43419-ebb2-4e38-80b6-0644c8344338/download/comptagevelo2011.csv",
+				"http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/f23e1c88-cd04-467f-a64a-48f5eb1b6c9e/download/comptagevelo2010.csv",
+				"http://donnees.ville.montreal.qc.ca/dataset/f170fecc-18db-44bc-b4fe-5b0b6d2c7297/resource/ee1e9541-939d-429e-919a-8ab94527773c/download/comptagevelo2009.csv"
+			]
 			var WIDTH = 420, BARHEIGHT = 20, BARWIDTH = 20;
 
 			var data;
 			var bars;
 			var header;
+			var live;
 
-			function update( index ) {
-				var colorize = d3.scaleLinear().domain([ 0, d3.max( data[index].data )]).range( ["purple", "gold"] );
-				var x = d3.scaleLinear().domain([ 0, d3.max( data[index].data ) ]).range([ 0, WIDTH ]);		
-				bars.data( data[index].data );
+			var weather;
 
-				bars.select("rect.bar-block").transition().attr("width", d => Math.max(BARWIDTH, x(d)) ).attr("height", BARHEIGHT - 1).attr("fill", colorize);
-				bars.select("text.bar-value").transition().attr("x", d => Math.max(x(d), BARWIDTH) - 3 ).attr("y", BARHEIGHT / 2).attr("dy", "0.35em").text( d => d );
-				bars.select("text.bar-name").transition().attr("x", d => Math.max(x(d), BARWIDTH) + 3 ).attr("y", BARHEIGHT / 2).attr("dy", "0.35em").text( ( d, i ) => header[i] );
+			function format ( value ) {
+				if ( value == undefined || value.length == 0 || value == null ) {
+					return "Unknown";
+				} else {
+					return value;
+				}
 			}
 
-		  d3.select('.years').on('change', function () {
-		  	var year = parseInt( d3.select(this).property('value') ) || 2018;
-		  	load( year );
-		  });
+			function update( index ) {
+				
+				for ( var i = 0; i < header.length; i++ ) {
+					live[i] = data[index].data[i] || 0;
+				}
 
-		  function load ( year ) {
-		  	console.log('starting load for ' + year + ' > ' + YEARS[year] );
-				d3.csv( YEARS[year] ).then( raw => {
-					console.log('loading complete (' + year + ')');
-					header = [];
-					for ( key in raw[0] ) {
-						header.push( key );
-					}
-					header = header.slice( 2 );
+				var colorize = d3.scaleLinear().domain([ 0, d3.max( live )]).range( ["purple", "gold"] );
+				var x = d3.scaleLinear().domain([ 0, d3.max( live ) ]).range([ 0, WIDTH ]);		
 
-					data = [];
-					for ( var i = 0; i < raw.length; i++ ) {
-						var row = [];
-						for ( var k = 0; k < header.length; k++ ) {
-							row.push( +raw[i][header[k]] );
+				// console.log( index, live );
+
+				bars.data( live );
+				bars.select("rect.bar-block").transition().attr("width", d => Math.max(BARWIDTH, x(d || 0)) ).attr("height", BARHEIGHT - 1).attr("fill", colorize);
+				bars.select("text.bar-value").transition().attr("x", d => Math.max(x(d || 0), BARWIDTH) - 3 ).attr("y", BARHEIGHT / 2).attr("dy", "0.35em").text( d => d );
+				bars.select("text.bar-name").transition().attr("x", d => Math.max(x(d || 0), BARWIDTH) + 3 ).attr("y", BARHEIGHT / 2).attr("dy", "0.35em").text( ( d, i ) => header[i] );
+
+				var current_weather = weather[ index ];
+				d3.select(".high").text( format( current_weather["MaxTemp"] ) + "℃	" );
+				d3.select(".low").text( format( current_weather["MinTemp"] ) + "℃	" );
+			}
+
+		  header = [];
+		  data = [];
+		  weather = [];
+		  loaded = 0;
+
+		  function load () {
+				for ( var i = 0; i < YEARS.length; i++ ) {
+
+					d3.csv('files/' + ( 2009 + i ) + '.csv').then( raw => {
+						// console.log('Loaded weather data: ', raw );
+						weather = weather.concat( raw );
+						loaded += 1;
+						onloaded();
+					});
+
+					d3.csv( YEARS[i] ).then( raw => {
+
+						for ( key in raw[0] ) {
+							if ( header.indexOf(key) == -1 && key != "" && key != "Date" ) {								
+								header.push( key );
+							}
 						}
-						data.push( { date: raw[i].Date, data: row } );
-					}
 
-					var dates = d3.select(".dates").selectAll("option").remove().exit().data( data.map( d => d.date ) ).enter().append("option").attr("value", (d, i) => i).text( d => d);
+						for ( var i = 0; i < raw.length; i++ ) {
+							var row = [];
+							for ( var k = 0; k < header.length; k++ ) {
+								if ( raw[i][header[k]] ) {
+									row.push( +raw[i][header[k]] );									
+								}
+							}
+							data.push( { date: raw[i].Date, data: row } );
+						}
+
+						loaded += 1;
+						onloaded();
+					});
+				}
+			}
+
+			function onloaded() {
+				if ( loaded > 2 * ( YEARS.length  ) - 1 ) {
+					data = data.sort( (a, b) =>  a.date.split("/").reverse().join("") - b.date.split("/").reverse().join("") );
+					var dates = d3.select(".dates").selectAll("option").remove().exit().data( data.map( d => d.date ) )
+						.enter().append("option").attr("value", (d, i) => i).text( d => d);
+
+					d3.select('option[value="' + (data.length - 1) + '"]').property('selected', true);
 
 					d3.select('.dates')
 					  .on('change', function() {
@@ -117,22 +196,34 @@
 					    update( index );
 					});
 
-					var x = d3.scaleLinear().domain([ 0, d3.max( data[0].data ) ]).range([ 0, WIDTH ]);		
+					d3.select('.loading').attr('class', 'loading done');
 
-					bars = d3.select(".chart").attr( "width", WIDTH + 240 ).attr( "height", BARHEIGHT * data[0].data.length )
-						.selectAll("g").remove().exit()
-						.data( data[0].data )
-						.enter().append("g").attr( "transform", ( d, i ) => "translate(0, " + i * BARHEIGHT + ")" );
+					// this seems redundant to update() - can we get rid of it??
+					// ALSO is there any way of keeping data object consistent without loading in ALL the keys (including when they don't have values) ???
+					
+					live = [];
+					for ( var i = 0; i < header.length; i++ ) {
+						live[i] = data[0].data[i] || 0;
+					}
+
+					bars = d3.select(".chart").attr( "width", WIDTH + 240 ).attr( "height", BARHEIGHT * live.length )
+						.selectAll("g")
+						.data( live );
+					
+					bars = bars.enter().append("g").attr( "transform", ( d, i ) => "translate(0, " + i * BARHEIGHT + ")" )
+					bars.exit().remove();
 
 					bars.append("rect").attr("class", "bar-block");
 					bars.append("text").attr("class", "bar-value");
 					bars.append("text").attr("class", "bar-name");
-
-					update( 0 );
-				});
+					
+					update( data.length - 1 );
+				} else {
+					console.log( "loading in progress, still. " );
+				}
 			}
 
-			load( 2018 );
+			load();
 		</script>
 	</body>
 </html>
